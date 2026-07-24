@@ -7,6 +7,7 @@ import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  
   // Global validation — every DTO gets validated automatically.
   // whitelist: strips unknown properties, forbidNonWhitelisted: rejects them outright.
   app.useGlobalPipes(
