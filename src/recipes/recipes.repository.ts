@@ -10,10 +10,12 @@ import { PrismaService } from '../prisma/prisma.service';
 export class RecipesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  
   create(data: Prisma.RecipeCreateInput): Promise<Recipe> {
     return this.prisma.recipe.create({ data });
   }
 
+  
   findMany(params: {
     where?: Prisma.RecipeWhereInput;
     skip?: number;
