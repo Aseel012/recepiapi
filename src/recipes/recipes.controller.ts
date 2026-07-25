@@ -17,6 +17,7 @@ import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { FindRecipesQueryDto } from './dto/find-recipes-query.dto';
 
+
 // Controllers stay THIN: parse the request, call the service, return the result.
 // No business logic and no direct DB access lives here.
 @ApiTags('recipes')
@@ -45,6 +46,7 @@ export class RecipesController {
     return this.recipesService.findOne(id);
   }
 
+  
   @Patch(':id')
   @ApiOperation({ summary: 'Update a recipe (partial update)' })
   @ApiResponse({ status: 404, description: 'Recipe not found' })
