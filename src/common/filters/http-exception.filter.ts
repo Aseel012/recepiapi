@@ -42,6 +42,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
           status = HttpStatus.CONFLICT;
           message = `Duplicate value for field(s): ${(exception.meta?.target as string[])?.join(', ')}`;
           break;
+        case 'P2003': // foreign key constraint violation (e.g. deleting a Category that still has Recipes)
+          status = HttpStatus.CONFLICT;
+          message = 'Cannot complete this operation: related records still reference this row';
+          break;
         default:
           status = HttpStatus.BAD_REQUEST;
           message = 'Database request error';

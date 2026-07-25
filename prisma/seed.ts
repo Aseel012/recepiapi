@@ -3,53 +3,99 @@ import { PrismaClient, Difficulty } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.recipe.createMany({
-    data: [
-      {
-        title: 'Classic Margherita Pizza',
-        description: 'Simple, fresh, and always a crowd pleaser.',
-        ingredients: [
-          'Pizza dough',
-          'San Marzano tomatoes',
-          'Fresh mozzarella',
-          'Basil leaves',
-          'Olive oil',
+  // Categories first — recipes need an existing categoryId to reference.
+  const [breakfast, dinner, dessert] = await Promise.all(
+    ['Breakfast', 'Dinner', 'Dessert'].map((name) =>
+      prisma.category.upsert({
+        where: { name },
+        update: {},
+        create: { name },
+      }),
+    ),
+  );
+  await Promise.all(
+    ['Lunch', 'Snacks'].map((name) =>
+      prisma.category.upsert({ where: { name }, update: {}, create: { name } }),
+    ),
+  );
+
+  await prisma.recipe.create({
+    data: {
+      title: 'Chicken Curry',
+      description: 'Rich, spiced curry with tender chicken.',
+      cookTimeMin: 45,
+      servings: 4,
+      difficulty: Difficulty.MEDIUM,
+      category: { connect: { id: dinner.id } },
+      ingredients: {
+        create: [
+          { name: 'Chicken thighs', quantity: 500, unit: 'g' },
+          { name: 'Onion', quantity: 2, unit: 'pcs' },
+          { name: 'Tomato puree', quantity: 200, unit: 'ml' },
+          { name: 'Garam masala', quantity: 1, unit: 'tbsp' },
+          { name: 'Ginger-garlic paste', quantity: 1, unit: 'tbsp' },
         ],
-        steps: [
-          'Preheat oven to 250°C with a pizza stone inside.',
-          'Stretch the dough into a round base.',
-          'Spread crushed tomatoes evenly over the dough.',
-          'Add torn mozzarella pieces.',
-          'Bake for 8-10 minutes until crust is golden.',
-          'Top with fresh basil and a drizzle of olive oil.',
-        ],
-        cookTimeMin: 25,
-        servings: 4,
-        difficulty: Difficulty.MEDIUM,
       },
-      {
-        title: 'Masala Chai',
-        description: 'Spiced Indian tea to start your day.',
-        ingredients: [
-          'Water',
-          'Milk',
-          'Black tea leaves',
-          'Ginger',
-          'Cardamom',
-          'Sugar',
+      recipeTags: {
+        create: [
+          { tag: { connectOrCreate: { where: { name: 'Indian' }, create: { name: 'Indian' } } } },
+          { tag: { connectOrCreate: { where: { name: 'Spicy' }, create: { name: 'Spicy' } } } },
+          { tag: { connectOrCreate: { where: { name: 'Dinner' }, create: { name: 'Dinner' } } } },
         ],
-        steps: [
-          'Boil water with crushed ginger and cardamom.',
-          'Add tea leaves and simmer for 2 minutes.',
-          'Add milk and bring to a boil.',
-          'Strain into cups and add sugar to taste.',
-        ],
-        cookTimeMin: 10,
-        servings: 2,
-        difficulty: Difficulty.EASY,
       },
-    ],
-    skipDuplicates: true,
+    },
+  });
+
+  await prisma.recipe.create({
+    data: {
+      title: 'Masala Chai',
+      description: 'Spiced Indian tea to start your day.',
+      cookTimeMin: 10,
+      servings: 2,
+      difficulty: Difficulty.EASY,
+      category: { connect: { id: breakfast.id } },
+      ingredients: {
+        create: [
+          { name: 'Water', quantity: 250, unit: 'ml' },
+          { name: 'Milk', quantity: 250, unit: 'ml' },
+          { name: 'Black tea leaves', quantity: 2, unit: 'tsp' },
+          { name: 'Ginger', quantity: 1, unit: 'tsp' },
+          { name: 'Cardamom', quantity: 2, unit: 'pcs' },
+        ],
+      },
+      recipeTags: {
+        create: [
+          { tag: { connectOrCreate: { where: { name: 'Indian' }, create: { name: 'Indian' } } } },
+          { tag: { connectOrCreate: { where: { name: 'Quick' }, create: { name: 'Quick' } } } },
+        ],
+      },
+    },
+  });
+
+  await prisma.recipe.create({
+    data: {
+      title: 'Chocolate Mug Cake',
+      description: 'Ready in 5 minutes, no oven needed.',
+      cookTimeMin: 5,
+      servings: 1,
+      difficulty: Difficulty.EASY,
+      category: { connect: { id: dessert.id } },
+      ingredients: {
+        create: [
+          { name: 'Flour', quantity: 4, unit: 'tbsp' },
+          { name: 'Cocoa powder', quantity: 2, unit: 'tbsp' },
+          { name: 'Sugar', quantity: 3, unit: 'tbsp' },
+          { name: 'Milk', quantity: 3, unit: 'tbsp' },
+          { name: 'Oil', quantity: 2, unit: 'tbsp' },
+        ],
+      },
+      recipeTags: {
+        create: [
+          { tag: { connectOrCreate: { where: { name: 'Quick' }, create: { name: 'Quick' } } } },
+          { tag: { connectOrCreate: { where: { name: 'Dessert' }, create: { name: 'Dessert' } } } },
+        ],
+      },
+    },
   });
 
   console.log('Seed data inserted.');

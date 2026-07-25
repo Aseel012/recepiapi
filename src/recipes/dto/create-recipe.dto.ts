@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Difficulty } from '@prisma/client';
+import { Type } from 'class-transformer';
 import {
   IsString,
   IsNotEmpty,
@@ -10,33 +11,23 @@ import {
   ArrayMinSize,
   IsEnum,
   MaxLength,
+  ValidateNested,
 } from 'class-validator';
+import { IngredientDto } from './ingredient.dto';
 
 export class CreateRecipeDto {
-  @ApiProperty({ example: 'Classic Margherita Pizza' })
+  @ApiProperty({ example: 'Chicken Curry' })
   @IsString()
   @IsNotEmpty()
   @MaxLength(120)
   title: string;
 
-  @ApiPropertyOptional({ example: 'Simple, fresh, and always a crowd pleaser.' })
+  @ApiPropertyOptional({ example: 'Rich, spiced curry with tender chicken.' })
   @IsOptional()
   @IsString()
   description?: string;
 
-  @ApiProperty({ example: ['Pizza dough', 'Tomatoes', 'Mozzarella'] })
-  @IsArray()
-  @ArrayMinSize(1, { message: 'At least one ingredient is required' })
-  @IsString({ each: true })
-  ingredients: string[];
-
-  @ApiProperty({ example: ['Preheat oven', 'Add toppings', 'Bake for 10 minutes'] })
-  @IsArray()
-  @ArrayMinSize(1, { message: 'At least one step is required' })
-  @IsString({ each: true })
-  steps: string[];
-
-  @ApiProperty({ example: 25, description: 'Cook time in minutes' })
+  @ApiProperty({ example: 40, description: 'Cook time in minutes' })
   @IsInt()
   @Min(1)
   cookTimeMin: number;
@@ -50,4 +41,25 @@ export class CreateRecipeDto {
   @IsOptional()
   @IsEnum(Difficulty)
   difficulty?: Difficulty;
+
+  // ManyToOne — the recipe points at exactly one existing category id.
+  @ApiProperty({ example: 1, description: 'Existing Category id' })
+  @IsInt()
+  categoryId: number;
+
+  // OneToMany — a recipe is created together with its ingredient rows.
+  @ApiProperty({ type: [IngredientDto] })
+  @IsArray()
+  @ArrayMinSize(1, { message: 'At least one ingredient is required' })
+  @ValidateNested({ each: true })
+  @Type(() => IngredientDto)
+  ingredients: IngredientDto[];
+
+  // Many-to-Many — tag NAMES, not ids. Unknown names get created on the fly
+  // (connectOrCreate), so the client never needs to know tag ids up front.
+  @ApiPropertyOptional({ example: ['Indian', 'Spicy', 'Dinner'] })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  tags?: string[];
 }

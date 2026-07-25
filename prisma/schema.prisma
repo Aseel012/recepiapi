@@ -10,19 +10,84 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ── Category ──────────────────────────────────────────────
+// One Category has MANY Recipes → Recipe is the "many" side (@ManyToOne equivalent)
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+
+  recipes Recipe[] // OneToMany — no FK lives here, it's just the reverse relation
+
+  @@map("categories")
+}
+
+// ── Tag ───────────────────────────────────────────────────
+// Many Recipes ↔ Many Tags, via the explicit RecipeTag join table below.
+model Tag {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  recipeTags RecipeTag[]
+
+  @@map("tags")
+}
+
+// ── Recipe ────────────────────────────────────────────────
 model Recipe {
   id          Int      @id @default(autoincrement())
   title       String
   description String?
-  ingredients String[]
-  steps       String[]
   cookTimeMin Int      @map("cook_time_min")
   servings    Int
   difficulty  Difficulty @default(EASY)
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
+  // ManyToOne: many recipes belong to one category.
+  // The foreign key (category_id) physically lives on THIS table.
+  categoryId Int      @map("category_id")
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  // OneToMany: one recipe has many ingredients.
+  // onDelete: Cascade → deleting a Recipe automatically deletes its Ingredients
+  // at the DB level (Prisma's equivalent of JPA's cascade + orphanRemoval
+  // for the "delete parent → delete children" direction).
+  ingredients Ingredient[]
+
+  recipeTags RecipeTag[]
+
   @@map("recipes")
+}
+
+// ── Ingredient ────────────────────────────────────────────
+// Normalized out of Recipe. Each row = one ingredient line for one recipe.
+model Ingredient {
+  id       Int    @id @default(autoincrement())
+  name     String
+  quantity Float
+  unit     String // e.g. "g", "ml", "tsp", "pcs"
+
+  recipeId Int    @map("recipe_id")
+  recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@map("ingredients")
+}
+
+// ── RecipeTag (join table) ───────────────────────────────
+// Explicit join model for the Many-to-Many between Recipe and Tag.
+// Using an explicit model (instead of Prisma's implicit m-n) so the FK
+// columns and composite key are visible and match what a hand-written
+// SQL join table looks like.
+model RecipeTag {
+  recipeId Int @map("recipe_id")
+  tagId    Int @map("tag_id")
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([recipeId, tagId])
+  @@map("recipe_tags")
 }
 
 enum Difficulty {

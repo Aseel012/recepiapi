@@ -1,18 +1,28 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, Recipe } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 
-// The repository's ONLY job is talking to the database.
-// No business rules, no HTTP concerns — just Prisma queries.
-// This is what makes the service layer swappable/testable later
-// (e.g. swap Prisma for raw SQL without touching RecipesService).
+// Every findMany/findOne includes the full relation graph so the API
+// always returns category + ingredients + tags in one response — the
+// client never has to make three separate requests to reassemble a recipe.
+const recipeInclude = {
+  category: true,
+  ingredients: true,
+  recipeTags: { include: { tag: true } },
+} satisfies Prisma.RecipeInclude;
+
 @Injectable()
 export class RecipesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+<<<<<<< HEAD
   
   create(data: Prisma.RecipeCreateInput): Promise<Recipe> {
     return this.prisma.recipe.create({ data });
+=======
+  create(data: Prisma.RecipeCreateInput) {
+    return this.prisma.recipe.create({ data, include: recipeInclude });
+>>>>>>> 1f9ad38 (udapted)
   }
 
   
@@ -20,28 +30,44 @@ export class RecipesRepository {
     where?: Prisma.RecipeWhereInput;
     skip?: number;
     take?: number;
-  }): Promise<Recipe[]> {
+  }) {
     return this.prisma.recipe.findMany({
       where: params.where,
       skip: params.skip,
       take: params.take,
       orderBy: { createdAt: 'desc' },
+      include: recipeInclude,
     });
   }
 
-  count(where?: Prisma.RecipeWhereInput): Promise<number> {
+  count(where?: Prisma.RecipeWhereInput) {
     return this.prisma.recipe.count({ where });
   }
 
-  findOne(id: number): Promise<Recipe | null> {
-    return this.prisma.recipe.findUnique({ where: { id } });
+  findOne(id: number) {
+    return this.prisma.recipe.findUnique({
+      where: { id },
+      include: recipeInclude,
+    });
   }
 
-  update(id: number, data: Prisma.RecipeUpdateInput): Promise<Recipe> {
-    return this.prisma.recipe.update({ where: { id }, data });
+  update(id: number, data: Prisma.RecipeUpdateInput) {
+    return this.prisma.recipe.update({
+      where: { id },
+      data,
+      include: recipeInclude,
+    });
   }
 
-  remove(id: number): Promise<Recipe> {
+  // onDelete: Cascade on Ingredient + RecipeTag means this single call
+  // also removes every ingredient row and every recipe_tags join row.
+  remove(id: number) {
     return this.prisma.recipe.delete({ where: { id } });
+  }
+
+  // Exposes the raw Prisma client for the one case (update) where the
+  // service needs to run several statements as one atomic transaction.
+  get client() {
+    return this.prisma;
   }
 }
