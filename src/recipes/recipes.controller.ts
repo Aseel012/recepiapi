@@ -18,6 +18,7 @@ import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { FindRecipesQueryDto } from './dto/find-recipes-query.dto';
 
 
+
 // Controllers stay THIN: parse the request, call the service, return the result.
 // No business logic and no direct DB access lives here.
 @ApiTags('recipes')
@@ -25,6 +26,7 @@ import { FindRecipesQueryDto } from './dto/find-recipes-query.dto';
 export class RecipesController {
   constructor(private readonly recipesService: RecipesService) {}
 
+  
   @Post()
   @ApiOperation({ summary: 'Create a new recipe' })
   @ApiResponse({ status: 201, description: 'Recipe created' })
@@ -33,6 +35,7 @@ export class RecipesController {
     return this.recipesService.create(createRecipeDto);
   }
 
+  
   @Get()
   @ApiOperation({ summary: 'List recipes (paginated, filterable)' })
   findAll(@Query() query: FindRecipesQueryDto) {
