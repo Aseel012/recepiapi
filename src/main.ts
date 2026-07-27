@@ -4,6 +4,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
@@ -17,6 +18,7 @@ async function bootstrap() {
     }),
   );
 
+  
   // Global exception filter — normalizes every error response shape.
   app.useGlobalFilters(new AllExceptionsFilter());
 
