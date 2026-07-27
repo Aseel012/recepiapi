@@ -9,11 +9,13 @@ export class FindRecipesQueryDto {
   @IsString()
   title?: string;
 
+  
   @ApiPropertyOptional({ enum: Difficulty })
   @IsOptional()
   @IsEnum(Difficulty)
   difficulty?: Difficulty;
 
+  
   @ApiPropertyOptional({ default: 1 })
   @IsOptional()
   @Type(() => Number)
@@ -21,6 +23,7 @@ export class FindRecipesQueryDto {
   @Min(1)
   page?: number = 1;
 
+  
   @ApiPropertyOptional({ default: 10 })
   @IsOptional()
   @Type(() => Number)
