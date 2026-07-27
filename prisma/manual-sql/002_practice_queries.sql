@@ -5,11 +5,13 @@
 -- raw query tab.
 -- =====================================================================
 
+
 -- 1. Every recipe with its category name (ManyToOne join)
 SELECT r.id, r.title, c.name AS category
 FROM recipes r
 JOIN categories c ON c.id = r.category_id
 ORDER BY r.id;
+
 
 -- 2. All ingredients for a single recipe (OneToMany)
 SELECT i.name, i.quantity, i.unit
