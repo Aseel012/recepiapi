@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Category, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 
+
 @Injectable()
 export class CategoriesRepository {
   constructor(private readonly prisma: PrismaService) {}
