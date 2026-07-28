@@ -6,6 +6,7 @@ import { CreateTagDto } from './dto/create-tag.dto';
 export class TagsService {
   constructor(private readonly repository: TagsRepository) {}
 
+  
   create(dto: CreateTagDto) {
     return this.repository.create(dto.name);
   }
