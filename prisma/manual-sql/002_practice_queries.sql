@@ -6,6 +6,7 @@
 -- =====================================================================
 
 
+
 -- 1. Every recipe with its category name (ManyToOne join)
 SELECT r.id, r.title, c.name AS category
 FROM recipes r
