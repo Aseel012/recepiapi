@@ -16,6 +16,7 @@
 -- data-migration step instead, see notes at the bottom of this file)
 DROP TABLE IF EXISTS recipes CASCADE;
 
+
 -- ── ENUM ──────────────────────────────────────────────────
 DO $$ BEGIN
   CREATE TYPE "Difficulty" AS ENUM ('EASY', 'MEDIUM', 'HARD');
