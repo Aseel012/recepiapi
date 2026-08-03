@@ -14,7 +14,7 @@ export class PrismaService
 
 <<<<<<< HEAD
 
-  
+
 =======
 >>>>>>> 1f9ad38 (udapted)
   async onModuleDestroy() {
