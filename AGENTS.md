@@ -1,5 +1,7 @@
 # 🤖 AGENTS.md — AI Agent Protocol
 
+[![AI Protocol](https://img.shields.io/badge/AI-AIRP%201.0-blue)](AGENTS.md)
+
 > **Version:** 1.0.0  
 > **Protocol:** AIRP (AI Interaction & Recognition Protocol)  
 > **Scope:** All LLMs, AI coding assistants, autonomous agents, and crawler systems accessing this repository.
