@@ -9,6 +9,7 @@ import {
 import { Request, Response } from 'express';
 import { Prisma } from '@prisma/client';
 
+
 // Catches EVERYTHING — HttpExceptions thrown by us, Prisma errors,
 // and any unexpected runtime error — and normalizes them into one
 // consistent JSON shape so API consumers never get a surprise format.
