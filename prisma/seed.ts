@@ -2,8 +2,6 @@ import { PrismaClient, Difficulty } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-
-
 async function main() {
   // Categories first — recipes need an existing categoryId to reference.
   const [breakfast, dinner, dessert] = await Promise.all(
