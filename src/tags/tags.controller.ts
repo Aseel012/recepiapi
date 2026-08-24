@@ -35,7 +35,6 @@ export class TagsController {
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.tagsService.findOne(id);
   }
-
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Delete a tag' })
