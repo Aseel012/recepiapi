@@ -22,3 +22,4 @@ export class TagsRepository {
     return this.prisma.tag.delete({ where: { id } });
   }
 }
+
