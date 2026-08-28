@@ -14,9 +14,8 @@ const recipeInclude = {
 @Injectable()
 export class RecipesRepository {
   constructor(private readonly prisma: PrismaService) {}
-
-<<<<<<< HEAD
   
+<<<<<<< HEAD
   create(data: Prisma.RecipeCreateInput): Promise<Recipe> {
     return this.prisma.recipe.create({ data });
 =======
