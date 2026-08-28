@@ -9,5 +9,4 @@ import { TagsRepository } from './tags.repository';
   exports: [TagsRepository],
 })
 
-
 export class TagsModule {}
