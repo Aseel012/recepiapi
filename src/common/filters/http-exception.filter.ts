@@ -33,7 +33,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
           ? res
           : ((res as any).message ?? exception.message);
     } else if (exception instanceof Prisma.PrismaClientKnownRequestError) {
-      // Prisma error codes reference: https://www.prisma.io/docs/orm/reference/error-reference
       switch (exception.code) {
         case 'P2025': // record not found (e.g. update/delete on missing row)
           status = HttpStatus.NOT_FOUND;
