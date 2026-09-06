@@ -10,7 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 // ── Category ──────────────────────────────────────────────
 // One Category has MANY Recipes → Recipe is the "many" side (@ManyToOne equivalent)
 model Category {
