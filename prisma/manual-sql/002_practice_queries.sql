@@ -69,7 +69,6 @@ GROUP BY t.name
 ORDER BY usage_count DESC;
 
 -- 9. Delete a recipe and watch cascade do the cleanup
--- (ingredients + recipe_tags rows for it disappear automatically)
 -- DELETE FROM recipes WHERE id = 1;
 
 -- 10. Prove orphan cleanup: this should return 0 rows after query 9
