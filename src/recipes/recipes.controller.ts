@@ -23,7 +23,6 @@ import { FindRecipesQueryDto } from './dto/find-recipes-query.dto';
 @Controller('recipes')
 export class RecipesController {
   constructor(private readonly recipesService: RecipesService) {}
-
   
   @Post()
   @ApiOperation({ summary: 'Create a new recipe' })
@@ -32,7 +31,6 @@ export class RecipesController {
   create(@Body() createRecipeDto: CreateRecipeDto) {
     return this.recipesService.create(createRecipeDto);
   }
-
   
   @Get()
   @ApiOperation({ summary: 'List recipes (paginated, filterable)' })
