@@ -23,7 +23,6 @@ export class RecipesRepository {
     return this.prisma.recipe.create({ data, include: recipeInclude });
 >>>>>>> 1f9ad38 (udapted)
   }
-
   
   findMany(params: {
     where?: Prisma.RecipeWhereInput;
